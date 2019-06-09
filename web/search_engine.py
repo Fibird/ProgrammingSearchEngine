@@ -68,7 +68,10 @@ class SearchEngine:
         c.execute('SELECT * FROM postings WHERE term=?', (term,))
         return(c.fetchone())
     
+    #def result_by_BM25(self, sentence, qiulei, fanwei, time_start, time_end):
     def result_by_BM25(self, sentence):
+        # 按&分词, eg: 库里 & 格林
+        # 把分词结果用结巴分词
         seg_list = jieba.lcut(sentence, cut_all=False)
         n, cleaned_dict = self.clean_list(seg_list)
         BM25_scores = {}
@@ -164,5 +167,10 @@ class SearchEngine:
 
 if __name__ == "__main__":
     se = SearchEngine('../config.ini', 'utf-8')
-    flag, rs = se.search('北京雾霾', 0)
-    print(rs[:10])
+    flag, rs1 = se.search('库里', 0)
+    flag, rs2 = se.search('格林', 0)
+    rs1ids = [item[0] for item in rs1]
+    rs2ids = [item[0] for item in rs2]
+    rsids = sorted(list(set(rs1ids) & set(rs2ids)))
+    #print(list(rs3)[:10])
+    print(rsids)

@@ -27,14 +27,32 @@
             <h1>虎扑体育新闻搜索引擎</h1>
             <form name="search" action="/search/" method="POST">
                 <p>
-                    {% if key %}
-                        <input type="text" name="key_word" value="{{key}}">
+                球类：
+                    <select name="kw1">
+                        <option value="" selected hidden>请选择</option>
+                        <option value="足球">足球</option>
+                        <option value="篮球">篮球</option> 
+                    </select>
+                范围：
+                    <select name="kw2">
+                        <option value="" selected hidden>请选择</option>
+                        <option value="国内">国内</option>
+                        <option value="国际">国际</option> 
+                    </select>
+                    <!-- <input type="submit" value="Search"> -->
+                </p>
+                <p>
+                    {% if skey %}
+                        <input type="text" name="key_word" value="{{skey}}">
                     {% else %}
                         <input type="text" name="key_word">
                     {% endif %}
+                    <!-- <input type="submit" value="Search"> -->
                     <input type="submit" value="Search">
                 </p>
+                
             </form>
+            
         </div>
         <hr/>
         {% block high_search%}
@@ -64,7 +82,7 @@
 		
 		<div id="footer">
 			<hr>
-            &copy; 2016 <a href="http://bitjoy.net/" target="_blank">bitjoy.net</a>
+            &copy; 2019 <a href="http://info.ruc.edu.cn" target="_blank">中国人民大学信息学院</a>
         </div>
 		
     </div>

@@ -41,7 +41,10 @@ def search():
         global keys
         global checked
         checked = ['checked="true"', '', '']
-        keys = request.form['key_word']
+        input_keys = request.form['key_word']
+        kws = request.form['kw1']
+        kws += " " + request.form['kw2']
+        keys= kws + input_keys
         #print(keys)
         if keys not in ['']:
             print(time.clock())
@@ -50,7 +53,8 @@ def search():
                 return render_template('search.html', error=False)
             docs = cut_page(page, 0)
             print(time.clock())
-            return render_template('high_search.html', checked=checked, key=keys, docs=docs, page=page,
+            
+            return render_template('high_search.html', checked=checked, key=keys, skey=input_keys, docs=docs, page=page,
                                    error=True)
         else:
             return render_template('search.html', error=False)

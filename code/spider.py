@@ -77,7 +77,7 @@ i=0
 # TODO: add sport list
 k=0
 doc_dir_path="./data/news/"
-page_num=31
+page_num=2
 for sport_url in sport_url_list:
     sport_dir = doc_dir_path+"sport_"+str(k)+"/"
     isExists=os.path.exists(sport_dir)
