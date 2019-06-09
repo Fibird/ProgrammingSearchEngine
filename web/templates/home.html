@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bootstrap模板</title>
+    <style type="text/css">
+    * {
+        box-sizing:border-box;
+    }
+    html,body{
+                height:100%;
+            }
+    body {
+        margin:0;
+        /*padding:0;*/
+        /*background-image:url(images/sports.jpg);*/
+        font-weight:500;
+        font-family:"Microsoft YaHei","宋体","Segoe UI","Lucida Grande",Helvetica,Arial,sans-serif,FreeSans,Arimo;
+    }
+
+    #tt{
+        height:200px;
+        width:200px;
+        top:50%;
+        left:50%;
+        position:absolute;
+        margin-top:-100px;
+        margin-left:-100px;
+    }
+    #container {
+        width:500px;
+        height:820px;
+        margin:0 auto;
+    }
+    div.search {
+        padding:10px 0;
+    }
+    form {
+        position:relative;
+        width:fit-content;
+        margin:0 auto;
+    }
+    input,button {
+        border:none;
+        outline:none;
+    }
+    input {
+        width:30%;
+        height:42px;
+        padding-left:13px;
+    }
+    button {
+        height:42px;
+        width:42px;
+        cursor:pointer;
+        position:static;
+    }
+    .bar7 form {
+        height:42px;
+    }
+    .bar7 form:focus{
+        height:55px
+    }
+    .bar7 input {
+        width:200px;
+        border-radius:42px;
+        border:2px solid #324B4E;
+        background:#F9F0DA;
+        transition:.3s linear;
+        float:left;
+    }    
+    .bar7 input:focus {
+        width:300px;
+    }
+    .bar7 button {
+        background:none;
+        top:-2px;
+        right:5px;
+        width:fit-content;
+        border-radius:42px;
+        border:2px solid #324B4E;
+        background: #F9F0DA;;
+    }
+    .bar7 button:before {
+        content:"Search";
+        font-family:FontAwesome;
+
+        /*color:#324b4e;*/
+        color:black;
+    }
+
+    .mbl {
+
+        width: 100%;
+
+        height: 100%;
+
+        background: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560019201169&di=a2459ca4c617693cd09dd05bb3492c63&imgtype=0&src=http%3A%2F%2Fimg.aiimg.com%2Fuploads%2Fallimg%2F131124%2F263915-131124153027.jpg);
+
+        background-size: cover;
+
+        overflow: hidden;
+
+        /*margin: 30px;*/
+
+    }
+    .text {
+
+        width: 100%;
+
+        height: 100%;
+
+        margin: 1em;
+
+        background: hsla(0, 0%, 100%, .4);
+
+        color: black;
+
+        text-align: center;
+
+        overflow: hidden;
+
+        position: relative;
+
+    }
+
+    .text::before {
+
+        position: absolute;
+
+        background: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560019201169&di=a2459ca4c617693cd09dd05bb3492c63&imgtype=0&src=http%3A%2F%2Fimg.aiimg.com%2Fuploads%2Fallimg%2F131124%2F263915-131124153027.jpg);
+
+        background-size: cover;
+
+        top: 0;
+
+        right: 0;
+
+        bottom: 0;
+
+        left: 0;
+
+        content: '';
+
+        filter: blur(4px);
+
+        /*    background: rgba(225, 0, 0, 0.5);*/
+
+    }
+
+    .text p {
+
+       height: inherit;
+
+        width: inherit;
+
+        display: table-cell;
+
+        vertical-align: middle;
+
+        position: relative;
+
+    }
+
+    </style>
+</head>
+<body>
+
+    <div class="mbl">
+
+        <div class="text">
+
+            <div class="search bar7" style="width:500px;height:200px;margin: auto;  position: absolute;  top: -150px; left: 0; bottom: 0; right: 0;">
+                <p style="color:#d2a32f;font-size:50px; font-family: HeiTi"> 体 育 新 闻 搜 索 </p>
+                <form name="search" action="/search/" method="POST">
+                    <!-- <input type="text" placeholder="关键词" name="crid"> -->
+                    {% if key %}
+                        <input type="text" name="key_word" value="{{key}}">
+                    {% else %}
+                        <input type="text" name="key_word">
+                    {% endif %}
+                    <button type="submit" value="Search"></button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+<!--     <div class="mbl">
+
+        <div class="search bar7" align="center">
+            <h1 style="color:blue;font-size:50px; font-family: Kaiti"> 体育新闻搜索 </h1>
+            <form>
+                <input type="text" placeholder="关键词" name="crid">
+                <button type="submit"></button>
+            </form>
+        </div>
+
+    </div> -->
+
+<!-- <div id="container" class="mbl">
+    <div class="search bar7" align="center">
+        <h1 style="color:blue;font-size:50px; font-family: Kaiti"> 体育新闻搜索 </h1>
+        <form>
+            <input type="text" placeholder="关键词" name="crid">
+            <button type="submit"></button>
+        </form>
+    </div>
+</div> -->
+</body>
+</html>

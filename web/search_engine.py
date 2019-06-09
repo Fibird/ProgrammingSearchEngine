@@ -68,8 +68,9 @@ class SearchEngine:
         c.execute('SELECT * FROM postings WHERE term=?', (term,))
         return(c.fetchone())
     
-    def result_by_BM25(self, sentence, sport_type, world_range, time_start, time_end):
-        cond_keys = sport_type + world_range;
+    # def result_by_BM25(self, sentence, sport_type, world_range, time_start, time_end):
+    #     cond_keys = sport_type + world_range
+
         
         
         
