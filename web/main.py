@@ -156,4 +156,4 @@ def get_k_nearest(db_path, docid, k=5):
 
 if __name__ == '__main__':
     jieba.initialize()  # 手动初始化（可选）
-    app.run()
+    app.run(host='0.0.0.0',port=5000)
