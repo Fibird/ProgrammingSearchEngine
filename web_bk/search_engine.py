@@ -68,13 +68,82 @@ class SearchEngine:
         c.execute('SELECT * FROM postings WHERE term=?', (term,))
         return(c.fetchone())
     
-    def result_by_BM25(self, sentence, sport_type, world_range, time_start, time_end):
-        cond_keys = sport_type + world_range;
+    def use_and(self, sentence):
+        # remove start and end spaces
+        sentence = sentence.lstrip().rstrip()
+        if sentence[0] == '(' and sentence[len(sentence)-1] == ')':
+            return True
+        else:
+            return False
+
+    def cond_result_by_BM25(self, sentence, sport_type, world_range):
+        cond_keys = sport_type + " " + world_range
+        # if not sport_type and not world_range:
+        #     return result_by_BM25_time(sentence, time_start, time_end)
+        cond_sores = self.BM25_And_Result(cond_keys)
+        if self.use_and(sentence):
+            print("use and")
+            sentence_scores = self.BM25_And_Result(sentence)
+        else:
+            print("use or")
+            sentence_scores = self.score_by_BM25(sentence)
+        BM25_scores = {}
+
+        for key in cond_sores:
+            if key in sentence_scores:
+                BM25_scores[key] = sentence_scores[key] + cond_sores[key]
+
+        BM25_scores = sorted(BM25_scores.items(), key = operator.itemgetter(1))
+        BM25_scores.reverse()
+        if len(BM25_scores) == 0:
+            return 0, []
+        else:
+            return 1, BM25_scores  
+    
+    def cond_result_by_time(self, sentence, sport_type, world_range):
+        cond_keys = sport_type + " " + world_range
+        # if not sport_type and not world_range:
+        #     return result_by_BM25_time(sentence, time_start, time_end)
+        cond_sores = self.Time_And_Result(cond_keys)
+        if self.use_and(sentence):
+            sentence_scores = self.Time_And_Result(sentence)
+        else:
+            sentence_scores = self.score_by_time(sentence)
+        time_scores = {}
+        for key in cond_sores:
+            if key in sentence_scores:
+                time_scores[key] = sentence_scores[key] + cond_sores[key]
+
+        time_scores = sorted(time_scores.items(), key = operator.itemgetter(1))
+        #time_scores.reverse()
+        if len(time_scores) == 0:
+            return 0, []
+        else:
+            return 1, time_scores                      
+
+    def cond_result_by_hot(self, sentence, sport_type, world_range):
+        cond_keys = sport_type + " " + world_range
+        # if not sport_type and not world_range:
+        #     return result_by_BM25_time(sentence, time_start, time_end)
+        cond_sores = self.Hot_And_Result(cond_keys)
+        if self.use_and(sentence):
+            sentence_scores = self.Hot_And_Result(sentence)
+        else:
+            sentence_scores = self.score_by_hot(sentence)
+        hot_scores = {}
         
-        
-        
-            
-    def result_by_BM25(self, sentence):
+        for key in cond_sores:
+            if key in sentence_scores:
+                hot_scores[key] = sentence_scores[key] + cond_sores[key]
+
+        hot_scores = sorted(hot_scores.items(), key = operator.itemgetter(1))
+        hot_scores.reverse()
+        if len(hot_scores) == 0:
+            return 0, []
+        else:
+            return 1, hot_scores
+
+    def score_by_BM25(self, sentence):
         # 按&分词, eg: 库里 & 格林
         # 把分词结果用结巴分词
         seg_list = jieba.lcut(sentence, cut_all=False)
@@ -97,6 +166,16 @@ class SearchEngine:
                     BM25_scores[docid] = BM25_scores[docid] + s
                 else:
                     BM25_scores[docid] = s
+        return BM25_scores    
+            
+    def result_by_BM25(self, sentence):
+        # 按&分词, eg: 库里 & 格林
+        # 把分词结果用结巴分词
+        if self.use_and(sentence):
+            BM25_scores = self.BM25_And_Result(sentence)
+        else:
+            BM25_scores = self.score_by_BM25(sentence)
+
         BM25_scores = sorted(BM25_scores.items(), key = operator.itemgetter(1))
         BM25_scores.reverse()
         if len(BM25_scores) == 0:
@@ -104,7 +183,19 @@ class SearchEngine:
         else:
             return 1, BM25_scores
     
+    
     def result_by_time(self, sentence):
+        if self.use_and(sentence):
+            time_scores = self.Time_And_Result(sentence)
+        else:
+            time_scores = self.score_by_time(sentence)
+        time_scores = sorted(time_scores.items(), key = operator.itemgetter(1))
+        if len(time_scores) == 0:
+            return 0, []
+        else:
+            return 1, time_scores
+
+    def score_by_time(self, sentence):
         seg_list = jieba.lcut(sentence, cut_all=False)
         n, cleaned_dict = self.clean_list(seg_list)
         time_scores = {}
@@ -123,13 +214,22 @@ class SearchEngine:
                 docid = int(docid)
                 td = (timedelta.total_seconds(td) / 3600) # hour
                 time_scores[docid] = td
-        time_scores = sorted(time_scores.items(), key = operator.itemgetter(1))
-        if len(time_scores) == 0:
-            return 0, []
-        else:
-            return 1, time_scores
+        
+        return time_scores
     
     def result_by_hot(self, sentence):
+        if self.use_and(sentence):
+            hot_scores = self.Hot_And_Result(sentence)
+        else:
+            hot_scores = self.score_by_hot(sentence)
+        hot_scores = sorted(hot_scores.items(), key = operator.itemgetter(1))
+        hot_scores.reverse()
+        if len(hot_scores) == 0:
+            return 0, []
+        else:
+            return 1, hot_scores
+
+    def score_by_hot(self, sentence):
         seg_list = jieba.lcut(sentence, cut_all=False)
         n, cleaned_dict = self.clean_list(seg_list)
         hot_scores = {}
@@ -155,27 +255,184 @@ class SearchEngine:
                     hot_scores[docid] = hot_scores[docid] + hot_score
                 else:
                     hot_scores[docid] = hot_score
+        
+        return hot_scores
+
+    def result_by_BM25_and(self, sentence):
+        BM25_scores = self.BM25_And_Result(sentence)
+        BM25_scores = sorted(BM25_scores.items(), key = operator.itemgetter(1))
+        BM25_scores.reverse()
+        if len(BM25_scores) == 0:
+            return 0, []
+        else:
+            return 1, BM25_scores
+    
+    def result_by_time_and(self, sentence):
+        time_scores = self.Time_And_Result(sentence)
+        time_scores = sorted(time_scores.items(), key = operator.itemgetter(1))
+        if len(time_scores) == 0:
+            return 0, []
+        else:
+            return 1, time_scores
+
+    def result_by_hot_and(self, sentence):
+        hot_scores = self.Hot_And_Result(sentence)
         hot_scores = sorted(hot_scores.items(), key = operator.itemgetter(1))
-        hot_scores.reverse()
         if len(hot_scores) == 0:
             return 0, []
         else:
             return 1, hot_scores
-    
-    def search(self, sentence, sort_type = 0):
+
+    def BM25_And_Result(self, sentence):
+        # 按&分词, eg: 库里 & 格林
+        # 把分词结果用结巴分词
+        seg_list = jieba.lcut(sentence, cut_all=False)
+        n, cleaned_dict = self.clean_list(seg_list)
+        BM25_scores = {}
+        And_result = {}
+        count = 0
+        for term in cleaned_dict.keys():  
+            #print(term)
+            And_result.clear()    
+            r = self.fetch_from_db(term)
+            if r is None:
+                continue
+            df = r[1]
+            w = math.log2((self.N - df + 0.5) / (df + 0.5))
+            docs = r[2].split('\n')
+            for doc in docs:
+                docid, date_time, tf, ld = doc.split('\t')
+                docid = int(docid)
+                tf = int(tf)
+                ld = int(ld)
+                s = (self.K1 * tf * w) / (tf + self.K1 * (1 - self.B + self.B * ld / self.AVG_L))
+                if docid in BM25_scores:
+                    BM25_scores[docid] = BM25_scores[docid] + s
+                    And_result[docid] = BM25_scores[docid]
+                else:
+                    if not count:
+                        BM25_scores[docid] = s
+            if count:
+                BM25_scores.clear()
+                BM25_scores = And_result.copy()
+            count+=1
+            # And_result.clear()
+        return BM25_scores
+        
+    def Time_And_Result(self, sentence):
+        # 按&分词, eg: 库里 & 格林
+        # 把分词结果用结巴分词
+        seg_list = jieba.lcut(sentence, cut_all=False)
+        n, cleaned_dict = self.clean_list(seg_list)
+        time_scores = {}
+        And_result = {}
+        count = 0
+        for term in cleaned_dict.keys():  
+            #print(term)
+            And_result.clear()    
+            r = self.fetch_from_db(term)
+            if r is None:
+                continue
+            docs = r[2].split('\n')
+            for doc in docs:
+                docid, date_time, tf, ld = doc.split('\t')
+                if docid in time_scores:
+                    continue
+                news_datetime = datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
+                now_datetime = datetime.now()
+                td = now_datetime - news_datetime
+                docid = int(docid)
+                td = (timedelta.total_seconds(td) / 3600) # hour
+                if docid in time_scores:
+                    # BM25_scores[docid] = BM25_scores[docid] + s
+                    And_result[docid] = td
+                else:
+                    if not count:
+                        time_scores[docid] = td
+            if count:
+                time_scores.clear()
+                time_scores = And_result.copy()
+            count+=1
+            # And_result.clear()
+        return time_scores
+
+    def Hot_And_Result(self, sentence):
+        seg_list = jieba.lcut(sentence, cut_all=False)
+        n, cleaned_dict = self.clean_list(seg_list)
+        hot_scores = {}
+        And_result = {}
+        count = 0
+        for term in cleaned_dict.keys():  
+            #print(term)
+            And_result.clear()    
+            r = self.fetch_from_db(term)
+            if r is None:
+                continue
+            df = r[1]
+            w = math.log2((self.N - df + 0.5) / (df + 0.5))
+            docs = r[2].split('\n')
+            for doc in docs:
+                docid, date_time, tf, ld = doc.split('\t')
+                docid = int(docid)
+                tf = int(tf)
+                ld = int(ld)
+                news_datetime = datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
+                now_datetime = datetime.now()
+                td = now_datetime - news_datetime
+                BM25_score = (self.K1 * tf * w) / (tf + self.K1 * (1 - self.B + self.B * ld / self.AVG_L))
+                td = (timedelta.total_seconds(td) / 3600) # hour
+                hot_score = math.log(BM25_score) + 1 / td
+                if docid in hot_scores:
+                    hot_scores[docid] = hot_scores[docid] + hot_score
+                    And_result[docid] = hot_scores[docid]
+                else:
+                    if not count:
+                        hot_scores[docid] = hot_score
+            if count:
+                hot_scores.clear()
+                hot_scores = And_result.copy()
+            count+=1
+            # And_result.clear()
+        return hot_scores
+
+    def search(self, sentence, sport_type, world_range, sort_type = 0):
+        print("Call search...")
         if sort_type == 0:
-            return self.result_by_BM25(sentence)
+            print("order 0")
+            if not sport_type and not world_range:
+                return self.result_by_BM25(sentence)
+            else:
+                return self.cond_result_by_BM25(sentence, sport_type, world_range)
         elif sort_type == 1:
-            return self.result_by_time(sentence)
+            if not sport_type and not world_range:
+                return self.result_by_time(sentence)
+            else:
+                return self.cond_result_by_time(sentence, sport_type, world_range)
         elif sort_type == 2:
-            return self.result_by_hot(sentence)
+            if not sport_type and not world_range:
+                return self.result_by_hot(sentence)
+            else:
+                return self.cond_result_by_hot(sentence, sport_type, world_range)
 
 if __name__ == "__main__":
     se = SearchEngine('../config.ini', 'utf-8')
-    flag, rs1 = se.search('库里', 0)
-    flag, rs2 = se.search('格林', 0)
-    rs1ids = [item[0] for item in rs1]
-    rs2ids = [item[0] for item in rs2]
-    rsids = sorted(list(set(rs1ids) & set(rs2ids)))
-    #print(list(rs3)[:10])
-    print(rsids)
+    flag, rs1 = se.result_by_BM25('格林 库里 考辛斯 武当松柏 德雷蒙德')
+    print("Or Result Number: " + str(len(rs1)))
+    flag, rs2 = se.result_by_BM25_and('库里 足球')
+    print("And Result Number: " + str(len(rs2)))
+    flag, rs3 = se.cond_result_by_BM25('库里', '足球', '国内')
+    print("Cond Result Number: " + str(len(rs3)))
+    flag, rs4 = se.result_by_time_and('库里 足球')
+    print("Time And Result: ", str(len(rs4)))
+    flag, rs5 = se.result_by_hot_and('库里 足球')
+    print("Time And Result: ", str(len(rs5)))
+    print("Use and: "+ str(se.use_and("(库里)")))
+    print("Not use and: "+ str(se.use_and("库里 格林")))
+    
+    # flag, rs1 = se.search('库里', 0)
+    # flag, rs2 = se.search('格林', 0)
+    # rs1ids = [item[0] for item in rs1]
+    # rs2ids = [item[0] for item in rs2]
+    # rsids = sorted(list(set(rs1ids) & set(rs2ids)))
+    # #print(list(rs3)[:10])
+    # print(rsids)
