@@ -68,12 +68,69 @@ class SearchEngine:
         c.execute('SELECT * FROM postings WHERE term=?', (term,))
         return(c.fetchone())
     
-    # def result_by_BM25(self, sentence, sport_type, world_range, time_start, time_end):
-    #     cond_keys = sport_type + world_range
+    def cond_result_by_BM25(self, sentence, sport_type, world_range, time_start, time_end):
+        cond_keys = sport_type + " " + world_range
+        # if not sport_type and not world_range:
+        #     return result_by_BM25_time(sentence, time_start, time_end)
+        
+        #cond_sores =    
+        BM25_scores = score_by_BM25(sentence)
+                  
 
+    def result_by_BM25_time(self, sentence, time_start, time_end):
+        # 按&分词, eg: 库里 & 格林
+        # 把分词结果用结巴分词
+        seg_list = jieba.lcut(sentence, cut_all=False)
+        n, cleaned_dict = self.clean_list(seg_list)
+        BM25_scores = {}
+        for term in cleaned_dict.keys():
+            r = self.fetch_from_db(term)
+            if r is None:
+                continue
+            df = r[1]
+            w = math.log2((self.N - df + 0.5) / (df + 0.5))
+            docs = r[2].split('\n')
+            for doc in docs:
+                docid, date_time, tf, ld = doc.split('\t')
+                docid = int(docid)
+                tf = int(tf)
+                ld = int(ld)
+                s = (self.K1 * tf * w) / (tf + self.K1 * (1 - self.B + self.B * ld / self.AVG_L))
+                if docid in BM25_scores:
+                    BM25_scores[docid] = BM25_scores[docid] + s
+                else:
+                    BM25_scores[docid] = s
+        BM25_scores = sorted(BM25_scores.items(), key = operator.itemgetter(1))
+        BM25_scores.reverse()
+        if len(BM25_scores) == 0:
+            return 0, []
+        else:
+            return 1, BM25_scores        
         
-        
-        
+    def score_by_BM25(self, sentence):
+        # 按&分词, eg: 库里 & 格林
+        # 把分词结果用结巴分词
+        seg_list = jieba.lcut(sentence, cut_all=False)
+        n, cleaned_dict = self.clean_list(seg_list)
+        BM25_scores = {}
+        for term in cleaned_dict.keys():
+            r = self.fetch_from_db(term)
+            if r is None:
+                continue
+            df = r[1]
+            w = math.log2((self.N - df + 0.5) / (df + 0.5))
+            docs = r[2].split('\n')
+            for doc in docs:
+                docid, date_time, tf, ld = doc.split('\t')
+                docid = int(docid)
+                tf = int(tf)
+                ld = int(ld)
+                s = (self.K1 * tf * w) / (tf + self.K1 * (1 - self.B + self.B * ld / self.AVG_L))
+                if docid in BM25_scores:
+                    BM25_scores[docid] = BM25_scores[docid] + s
+                else:
+                    BM25_scores[docid] = s
+        return BM25_scores    
             
     def result_by_BM25(self, sentence):
         # 按&分词, eg: 库里 & 格林
@@ -162,7 +219,52 @@ class SearchEngine:
             return 0, []
         else:
             return 1, hot_scores
-    
+    def result_by_BM25_and(self, sentence):
+        BM25_scores = self.BM25_And_Result(sentence)
+        BM25_scores = sorted(BM25_scores.items(), key = operator.itemgetter(1))
+        BM25_scores.reverse()
+        if len(BM25_scores) == 0:
+            return 0, []
+        else:
+            return 1, BM25_scores
+
+    def BM25_And_Result(self, sentence):
+        # 按&分词, eg: 库里 & 格林
+        # 把分词结果用结巴分词
+        seg_list = jieba.lcut(sentence, cut_all=False)
+        n, cleaned_dict = self.clean_list(seg_list)
+        BM25_scores = {}
+        And_result = {}
+        count = 0
+        for term in cleaned_dict.keys():  
+            #print(term)
+            And_result.clear()    
+            r = self.fetch_from_db(term)
+            if r is None:
+                continue
+            df = r[1]
+            w = math.log2((self.N - df + 0.5) / (df + 0.5))
+            docs = r[2].split('\n')
+            for doc in docs:
+                docid, date_time, tf, ld = doc.split('\t')
+                docid = int(docid)
+                tf = int(tf)
+                ld = int(ld)
+                s = (self.K1 * tf * w) / (tf + self.K1 * (1 - self.B + self.B * ld / self.AVG_L))
+                if docid in BM25_scores:
+                    BM25_scores[docid] = BM25_scores[docid] + s
+                    And_result[docid] = BM25_scores[docid]
+                else:
+                    if not count:
+                        BM25_scores[docid] = s
+            if count:
+                BM25_scores.clear()
+                BM25_scores = And_result.copy()
+            count+=1
+            # And_result.clear()
+        return BM25_scores
+        
+
     def search(self, sentence, sort_type = 0):
         if sort_type == 0:
             return self.result_by_BM25(sentence)
@@ -173,10 +275,14 @@ class SearchEngine:
 
 if __name__ == "__main__":
     se = SearchEngine('../config.ini', 'utf-8')
-    flag, rs1 = se.search('库里', 0)
-    flag, rs2 = se.search('格林', 0)
-    rs1ids = [item[0] for item in rs1]
-    rs2ids = [item[0] for item in rs2]
-    rsids = sorted(list(set(rs1ids) & set(rs2ids)))
-    #print(list(rs3)[:10])
-    print(rsids)
+    flag, rs1 = se.result_by_BM25('格林 库里 考辛斯 武当松柏 德雷蒙德')
+    print("Or Result Number: " + str(len(rs1)))
+    flag, rs2 = se.result_by_BM25_and('格林 库里 考辛斯 武当松柏 德雷蒙德')
+    print("And Result Number: " + str(len(rs2)))
+    # flag, rs1 = se.search('库里', 0)
+    # flag, rs2 = se.search('格林', 0)
+    # rs1ids = [item[0] for item in rs1]
+    # rs2ids = [item[0] for item in rs2]
+    # rsids = sorted(list(set(rs1ids) & set(rs2ids)))
+    # #print(list(rs3)[:10])
+    # print(rsids)

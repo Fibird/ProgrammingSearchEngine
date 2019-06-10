@@ -31,7 +31,7 @@ def init():
 @app.route('/')
 def main():
     init()
-    return render_template('search.html', error=True)
+    return render_template('home.html', error=True)
 
 
 # 读取表单数据，获得doc_ID
@@ -42,19 +42,19 @@ def search():
         global checked
         checked = ['checked="true"', '', '']
         input_keys = request.form['key_word']
-        kws = request.form['kw1']
-        kws += " " + request.form['kw2']
-        keys= kws + input_keys
-        #print(keys)
+        select_keys = request.form['select_key1']
+        select_keys += " " + request.form['select_key2']
+        keys= select_keys + input_keys
+        print(keys)
         if keys not in ['']:
-            print(time.clock())
+            #print(time.clock())
             flag,page = searchidlist(keys)
             if flag==0:
                 return render_template('search.html', error=False)
             docs = cut_page(page, 0)
-            print(time.clock())
+            #print(time.clock())
             
-            return render_template('high_search.html', checked=checked, key=keys, skey=input_keys, docs=docs, page=page,
+            return render_template('high_search.html', checked=checked, key=keys, input_key=input_keys, docs=docs, page=page,
                                    error=True)
         else:
             return render_template('search.html', error=False)

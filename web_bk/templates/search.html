@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-    <title>虎扑体育新闻搜索引擎</title>
+    <title>体育新闻搜索引擎</title>
     <style type="text/css">
         div#doc {width:800px}
+        body,td,th {font-family: Verdana, Arial, Helvetica, sans-serif;font-size: 12px;color: #1d1007; line-height:24px} 
     .pagination-page-info {
         padding: .6em;
         padding-left: 0;
@@ -19,44 +20,168 @@
         padding: .1em .25em;
         font-size: 150%;
     }
+    .bar7 div{
+        align-items:center;
+    }
+    .bar7 form {
+        height:48px;
+    }
+    .bar7 input {
+        width:200px;
+        height: 48px;
+        border-radius:10px;
+        /*border:2px solid #324B4E;*/
+        border:2px solid black;
+        /*background:#F9F0DA;*/
+        transition:.3s linear;
+        float:middle;
+        padding-left:13px;
+
+    }
+/*    .bar7 input:focus {
+        width:300px;
+    }*/
+    .bar7 button {
+        background:none;
+        top:-10px;
+        right:200px;
+        width:relative;
+        height: 48px;
+        border-radius:42px;
+        border:2px solid black;
+
+ /*       background:#F9F0DA;
+        transition:.3s linear;
+        float:left;*/
+    }
+    .bar7 button:before {
+        content:"Search";
+        font-family:Times New Roman;
+        /*color:#324b4e;*/
+        color: black;
+        vertical-align:middle;
+        font-size: 14px;
+    }
+
+        .mbl {
+
+        width: 100%;
+
+        height: 100%;
+
+        background: url(http://pic1.win4000.com/wallpaper/0/586b0fb538177.jpg);
+
+        background-size: cover;
+
+        overflow: hidden;
+
+        /*margin: 30px;*/
+
+    }
+    .uul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-end: 40px;
+
+}
+    .text {
+
+        width: 100%;
+
+        height: 100%;
+
+        margin: 1em;
+
+        background: hsla(0, 0%, 100%, .4);
+
+        color: black;
+
+        text-align: center;
+
+        overflow: hidden;
+
+        position: relative;
+
+    }
+
+    .text::before {
+
+        position: absolute;
+
+        background: url(http://pic1.win4000.com/wallpaper/0/586b0fb538177.jpg);
+
+        background-size: cover;
+
+        top: 0;
+
+        right: 0;
+
+        bottom: 0;
+
+        left: 0;
+
+        content: '';
+
+        filter: blur(4px);
+
+        /*    background: rgba(225, 0, 0, 0.5);*/
+
+    }
+
+    .text p {
+
+       height: inherit;
+
+        width: inherit;
+
+        display: table-cell;
+
+        vertical-align: middle;
+
+        position: relative;
+
+    }
     </style>
 </head>
 <body>
     <div id="container">
-        <div id="header">
-            <h1>虎扑体育新闻搜索引擎</h1>
+        <div id="header" class="bar7"  align="center">
+            <h1 style="font-size:50px; font-family: Kaiti">体育新闻搜索引擎</h1>
             <form name="search" action="/search/" method="POST">
-                <p>
-                球类：
-                    <select name="kw1">
-                        <option value="" selected hidden>请选择</option>
-                        <option value="足球">足球</option>
-                        <option value="篮球">篮球</option> 
-                    </select>
-                范围：
-                    <select name="kw2">
-                        <option value="" selected hidden>请选择</option>
-                        <option value="国内">国内</option>
-                        <option value="国际">国际</option> 
-                    </select>
-                    <!-- <input type="submit" value="Search"> -->
-                </p>
-                <p>
-                    {% if skey %}
-                        <input type="text" name="key_word" value="{{skey}}">
+                
+                        球类：
+                        <select name="select_key1">
+                            <option value="" selected hidden>请选择</option>
+                            <option value="足球">足球</option>
+                            <option value="篮球">篮球</option> 
+                        </select>
+                    范围：
+                        <select name="select_key2">
+                            <option value="" selected hidden>请选择</option>
+                            <option value="国内">国内</option>
+                            <option value="国际">国际</option> 
+                        </select>
+                    <br/> 
+                    
+                    {% if key %}
+                        <input type="text" name="key_word" value="{{input_key}}">
                     {% else %}
                         <input type="text" name="key_word">
                     {% endif %}
-                    <!-- <input type="submit" value="Search"> -->
-                    <input type="submit" value="Search">
-                </p>
-                
+                    <button type="submit" value="Search"/>
+              
             </form>
-            
         </div>
-        <hr/>
+        <br/> 
+        <div id=container>
         {% block high_search%}
         {% endblock %}
+        </div>
+        <hr/>
         {% if error%}
             {% for doc in docs%}
             <div id="doc">
@@ -70,6 +195,8 @@
             <br/>
             {% endfor %}
         {% block next %}
+
+        <hr/>
         <ul>
             {% for i in page %}
                 <a href="/search/page/{{i}}/">{{i}}</a>&nbsp;
@@ -79,12 +206,7 @@
         {% else %}
             <p>对不起，没有您搜索的网页！</p>
         {% endif %}
-		
-		<div id="footer">
-			<hr>
-            &copy; 2019 <a href="http://info.ruc.edu.cn" target="_blank">中国人民大学信息学院</a>
-        </div>
-		
+
     </div>
 </body>
 </html>

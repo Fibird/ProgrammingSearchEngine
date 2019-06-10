@@ -1,7 +1,7 @@
 {% extends "search.html" %}
 {% block high_search%}
-<div id="select">
-    <ul>
+<div id="select" align="center">
+    <ul class="uul">
         <form name="search" action="/search/{{key}}/" method="POST">
             <input {{checked[0]}} type="radio" name="order" id="r1" value="0" /> <label for="r1">相关度</label>
             <input {{checked[1]}} type="radio" name="order" id="r2" value="1" /> <label for="r2">时间</label>
