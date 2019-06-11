@@ -4,7 +4,7 @@ __author__ = 'lcl'
 from flask import Flask, render_template, request
 
 from search_engine import SearchEngine
-import traceback
+
 import xml.etree.ElementTree as ET
 import sqlite3
 import configparser
@@ -40,36 +40,32 @@ def search():
     try:
         global keys
         global checked
-        global dir_path
         checked = ['checked="true"', '', '']
-        input_keys = request.form['key_word']
-        select_keys1 = request.form['select_key1']
-        select_keys2 = request.form['select_key2']
-        
-        keys = input_keys + "|" + select_keys1 + "%" + select_keys2
+        keys = request.form['key_word']
         #print(keys)
         if keys not in ['']:
             #print(time.clock())
-            flag,page = searchidlist(input_keys, select_keys1, select_keys2)
+            flag,page = searchidlist(keys)
             if flag==0:
                 return render_template('search.html', error=False)
             docs = cut_page(page, 0)
+            #print(page)
+            #print(docs)
             #print(time.clock())
-            
-            return render_template('high_search.html', checked=checked, key=keys, input_key=input_keys, docs=docs, page=page,
+            return render_template('high_search.html', checked=checked, key=keys, docs=docs, page=page,
                                    error=True)
         else:
             return render_template('search.html', error=False)
 
-    except Exception as e:
-        print('search error: ' + str(e))
+    except:
+        print('search error')
 
 
-def searchidlist(key, sport_type, world_range, selected=0):
+def searchidlist(key, selected=0):
     global page
     global doc_id
     se = SearchEngine('../config.ini', 'utf-8')
-    flag, id_scores = se.search(key, sport_type, world_range, selected)
+    flag, id_scores = se.search(key, selected)
     # 返回docid列表
     doc_id = [i for i, s in id_scores]
     page = []
@@ -127,24 +123,14 @@ def high_search(key):
                 checked[i] = 'checked="true"'
             else:
                 checked[i] = ''
-        
-        
-        ks = key.split('|')
-        key1 = ks[0]
-        key2 = ks[1]
-        #print(key2)
-        select_key1 = key2.split('%')[0]
-        #print(select_key1)
-        select_key2 = key2.split('%')[1]
-        #print("get: " +select_key1+ "%" +select_key2)
-        flag,page = searchidlist(key1, select_key1, select_key2, selected)
+        flag,page = searchidlist(key, selected)
         if flag==0:
             return render_template('search.html', error=False)
         docs = cut_page(page, 0)
-        return render_template('high_search.html', checked=checked, key=keys, input_key=key1, docs=docs, page=page,
-                                   error=True)
-    except Exception as e:
-        print('high search error: '+ str(e))
+        return render_template('high_search.html',checked=checked ,key=keys, docs=docs, page=page,
+                               error=True)
+    except:
+        print('high search error')
 
 
 @app.route('/search/<id>/', methods=['GET', 'POST'])
