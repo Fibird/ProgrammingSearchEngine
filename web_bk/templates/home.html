@@ -174,14 +174,15 @@
                 <form name="search" action="/search/" method="POST">
                     <p>
                     球类：
-                        <select name="select_key1">
-                            <option value="" selected hidden>请选择</option>
+                        <select name="select_key1" id="se1">
+                            <option value="" selected>请选择</option>
                             <option value="足球">足球</option>
                             <option value="篮球">篮球</option> 
+                            <option value="羽毛球">羽毛球</option> 
                         </select>
                     范围：
-                        <select name="select_key2">
-                            <option value="" selected hidden>请选择</option>
+                        <select name="select_key2" id="se2">
+                            <option value="" selected>请选择</option>
                             <option value="国内">国内</option>
                             <option value="国际">国际</option> 
                         </select>
@@ -199,27 +200,24 @@
         </div>
 
     </div>
-
-<!--     <div class="mbl">
-
-        <div class="search bar7" align="center">
-            <h1 style="color:blue;font-size:50px; font-family: Kaiti"> 体育新闻搜索 </h1>
-            <form>
-                <input type="text" placeholder="关键词" name="crid">
-                <button type="submit"></button>
-            </form>
-        </div>
-
-    </div> -->
-
-<!-- <div id="container" class="mbl">
-    <div class="search bar7" align="center">
-        <h1 style="color:blue;font-size:50px; font-family: Kaiti"> 体育新闻搜索 </h1>
-        <form>
-            <input type="text" placeholder="关键词" name="crid">
-            <button type="submit"></button>
-        </form>
-    </div>
-</div> -->
 </body>
+<script type="text/javascript">
+    se1 = document.getElementById('se1');
+    se2 = document.getElementById('se2');
+    se1.onchange = function () {
+        localStorage.value1 = this.value;
+        localStorage.index1 = this.selectedIndex;
+        // console.log( localStorage.index +";"+ localStorage.value );
+    }
+    se2.onchange = function () {
+        localStorage.value2 = this.value;
+        localStorage.index2 = this.selectedIndex;
+        // console.log( localStorage.index +";"+ localStorage.value );
+    }
+    window.onload = function () {
+        // alert( localStorage.index +";"+ localStorage.value );
+        se1.options[localStorage.index1].selected = true;
+        se2.options[localStorage.index2].selected = true;
+    }
+</script>
 </html>

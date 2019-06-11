@@ -71,6 +71,8 @@ class SearchEngine:
     def use_and(self, sentence):
         # remove start and end spaces
         sentence = sentence.lstrip().rstrip()
+        if not sentence:
+            return False
         if sentence[0] == '(' and sentence[len(sentence)-1] == ')':
             return True
         else:
@@ -82,10 +84,10 @@ class SearchEngine:
         #     return result_by_BM25_time(sentence, time_start, time_end)
         cond_sores = self.BM25_And_Result(cond_keys)
         if self.use_and(sentence):
-            print("use and")
+            print("Use and: " + sentence)
             sentence_scores = self.BM25_And_Result(sentence)
         else:
-            print("use or")
+            print("Use or: " + sentence)
             sentence_scores = self.score_by_BM25(sentence)
         BM25_scores = {}
 
@@ -106,8 +108,10 @@ class SearchEngine:
         #     return result_by_BM25_time(sentence, time_start, time_end)
         cond_sores = self.Time_And_Result(cond_keys)
         if self.use_and(sentence):
+            print("Use and: " + sentence)
             sentence_scores = self.Time_And_Result(sentence)
         else:
+            print("Use or: " + sentence)
             sentence_scores = self.score_by_time(sentence)
         time_scores = {}
         for key in cond_sores:
@@ -127,8 +131,10 @@ class SearchEngine:
         #     return result_by_BM25_time(sentence, time_start, time_end)
         cond_sores = self.Hot_And_Result(cond_keys)
         if self.use_and(sentence):
+            print("Use and: " + sentence)
             sentence_scores = self.Hot_And_Result(sentence)
         else:
+            print("Use or: " + sentence)
             sentence_scores = self.score_by_hot(sentence)
         hot_scores = {}
         
@@ -172,8 +178,10 @@ class SearchEngine:
         # 按&分词, eg: 库里 & 格林
         # 把分词结果用结巴分词
         if self.use_and(sentence):
+            print("Use and: " + sentence)
             BM25_scores = self.BM25_And_Result(sentence)
         else:
+            print("Use or: " + sentence)
             BM25_scores = self.score_by_BM25(sentence)
 
         BM25_scores = sorted(BM25_scores.items(), key = operator.itemgetter(1))
@@ -186,8 +194,10 @@ class SearchEngine:
     
     def result_by_time(self, sentence):
         if self.use_and(sentence):
+            print("Use and: " + sentence)
             time_scores = self.Time_And_Result(sentence)
         else:
+            print("Use or: " + sentence)
             time_scores = self.score_by_time(sentence)
         time_scores = sorted(time_scores.items(), key = operator.itemgetter(1))
         if len(time_scores) == 0:
@@ -219,8 +229,10 @@ class SearchEngine:
     
     def result_by_hot(self, sentence):
         if self.use_and(sentence):
+            print("Use and: " + sentence)
             hot_scores = self.Hot_And_Result(sentence)
         else:
+            print("Use or: " + sentence)
             hot_scores = self.score_by_hot(sentence)
         hot_scores = sorted(hot_scores.items(), key = operator.itemgetter(1))
         hot_scores.reverse()
@@ -397,21 +409,27 @@ class SearchEngine:
 
     def search(self, sentence, sport_type, world_range, sort_type = 0):
         print("Call search...")
+        print("Order " + str(sort_type), end=";")
         if sort_type == 0:
-            print("order 0")
             if not sport_type and not world_range:
+                print("No conds", end=";")
                 return self.result_by_BM25(sentence)
             else:
+                print("Use conds: " + sport_type + world_range, end=";")
                 return self.cond_result_by_BM25(sentence, sport_type, world_range)
         elif sort_type == 1:
             if not sport_type and not world_range:
+                print("No conds", end=";")
                 return self.result_by_time(sentence)
             else:
+                print("Use conds: " + sport_type + world_range, end=";")
                 return self.cond_result_by_time(sentence, sport_type, world_range)
         elif sort_type == 2:
             if not sport_type and not world_range:
+                print("No conds", end=";")
                 return self.result_by_hot(sentence)
             else:
+                print("Use conds: " + sport_type + world_range, end=";")
                 return self.cond_result_by_hot(sentence, sport_type, world_range)
 
 if __name__ == "__main__":

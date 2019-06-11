@@ -40,13 +40,14 @@ def search():
     try:
         global keys
         global checked
+        global dir_path
         checked = ['checked="true"', '', '']
         input_keys = request.form['key_word']
         select_keys1 = request.form['select_key1']
         select_keys2 = request.form['select_key2']
         
         keys = input_keys + "|" + select_keys1 + "%" + select_keys2
-        print(keys)
+        #print(keys)
         if keys not in ['']:
             #print(time.clock())
             flag,page = searchidlist(input_keys, select_keys1, select_keys2)
@@ -60,8 +61,8 @@ def search():
         else:
             return render_template('search.html', error=False)
 
-    except:
-        print('search error')
+    except Exception as e:
+        print('search error: ' + str(e))
 
 
 def searchidlist(key, sport_type, world_range, selected=0):
@@ -131,9 +132,9 @@ def high_search(key):
         ks = key.split('|')
         key1 = ks[0]
         key2 = ks[1]
-        print(key2)
+        #print(key2)
         select_key1 = key2.split('%')[0]
-        print(select_key1)
+        #print(select_key1)
         select_key2 = key2.split('%')[1]
         #print("get: " +select_key1+ "%" +select_key2)
         flag,page = searchidlist(key1, select_key1, select_key2, selected)
