@@ -52,7 +52,7 @@ def search():
             #print(time.clock())
             flag,page = searchidlist(input_keys, select_keys1, select_keys2)
             if flag==0:
-                return render_template('search.html', error=False)
+                return render_template('search.html', input_key=input_keys, error=False)
             docs = cut_page(page, 0)
             #print(time.clock())
             
