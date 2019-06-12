@@ -1,0 +1,192 @@
+@charset "utf-8";
+
+body{background-color:#fff;color:#333;font-size:12px;line-height: 20px}
+a{color:#333}a:hover,a:focus,.maincolor,.maincolor a{color:#506FA5}
+.subcolor,.subcolor a{color:#0B3B8C}
+
+.title_1{line-height:30px;}
+.title_1 h2{font-size:17px;line-height:30px;text-shadow: 0 1px 1px rgba(92, 92, 92, 0.1); margin:0; font-weight:bold}
+.containBox{background-color:#fff;position:relative;z-index:100;zoom:1;-moz-transition:-moz-transform .2s ease-out;-webkit-transition:-webkit-transform .2s ease-out;-o-transition:-o-transform .2s ease-out;transition:transform .2s ease-out; top:0px;}
+.containBox_opbg{position:absolute;width:100%;top:0;left:0;z-index:999}
+.sideBox{ display:none}
+
+.header_top{ display:none;position:fixed;top:0;left:0;width:100%;z-index:99; height:35px; line-height:35px;}
+.h_topbar{ display:none}
+.header_top a{ color:#fff!important}
+.header_top a:hover{color:#fff!important; text-decoration:none}
+
+.mainnav{font-size:14px; background-color:#379BE9; padding:0 20px}
+.mainnav li a{ padding:0 8px}
+.mainnav li a:hover,.mainnav li.current a{ background-color:#1669ab}
+
+
+.crumb_search{padding:10px 0;}
+	.crumbbar{ width:640px;height:30px; overflow:hidden; margin-right:10px;}
+	.crumbbar span a{padding:0 5px;}
+	.crumbbar .logo{ display:block; height:30px; width:120px; float:left; background:url(../images/article-logo.gif) no-repeat left bottom;}
+	.crumbbar span{ float:left; color:#000; padding-top:10px;}
+	.crumbbar span a{color:#0B3B8C}
+	.crumbbar span em{ font-style:normal; color:#7e7e7e;}
+.crumb_search .searchbar{ margin-top:0px;}
+.Hui-wraper{ width:1000px; padding:10px 0}
+.ct2 .mn{ border-top:solid 2px #003795; padding-top:22px}
+
+.ct2 .sd{width:300px}
+/*2 资讯列表
+	Name:			page_article_list
+	Sample:			
+	<ul class="cl article_list">
+      <li>
+        <h3 class="art-title"><a href="#" target="_blank" class="maincolor">新闻标题</a></h3>
+		<p class="art-desc cl"><img src="../update/pic/thumb/thumbImg.jpg" class="art-img">新闻摘要，为了页面美观，建议字数控制在128——158字符之间</p>
+		<p class="cl"><span class="art-source l">来源：<a href="#" title="网站名称" target="_blank">来源网站名称</a></span><span class="art-time l">今天22:25:00<!-- 昨天22:25:00 2013-08-01 22:25:00--></span><span class="art-pub r"><a href="#">转发</a> <span class="pipe">|</span> <a href="#">收藏</a> <span class="pipe">|</span> <a href="#">评论</a></span></p>
+      </li>
+	</ul>
+	Explain:		资讯列表
+	Last Modify:	jackying
+*/
+.article_list.cl{}
+.article_list li{border-bottom: 1px solid #EBEBEB;overflow: hidden;padding: 12px;text-align: left;}
+.article_list li:hover{ background-color:#f8f8f8}
+.article_list li:hover .art-pub{ display:inline-block}
+	.art-title{ font-size:18px; line-height:24px; font-weight:400; margin-bottom:8px;}
+	.art-source{ padding-right:20px;color:#B9B9B9}/*资讯来源*/
+	.art-time{ color:#B9B9B9}/*资讯时间*/
+	.art-desc{ font-size:14px; color:#818181; line-height:24px}
+	.art-img{ float:right; width:150px; height:110px; margin-left:14px; border:1px solid #D9D9D9; padding:2px}
+	.art-pub{ display:none}
+	.art-pub a{ text-indent:-9999em;filter:alpha(opacity=80);-moz-opacity:0.8;opacity:0.8;}
+	.art-pub a:hover{filter:alpha(opacity=100);-moz-opacity:1.0;opacity:1;}
+	/*更多资讯*/
+.moreArticle{ display:block; height:37px; cursor:pointer; background-color:#eee; color:#7B7B7B; font-size:16px; line-height:37px; text-align:center;}
+.moreArticle:hover{ background-color:#ddd; color:#333}
+
+/*灰线*/
+.grayborder{ border-bottom:solid 5px #F2F2F2}
+/*3 资讯详情
+	Name:			page_article_show
+	Sample:			
+	<section class="article_show cl">
+      <h1>新闻标题</h1>
+      <div class="titbar cl"> <span>2013-01-22 14:50</span> <span class="where">来源：<a href="#" rel="nofollow">网站名称</a></span> <span class="cishu">点击：3504 </span> <span class="wypl"><a class="maincolor" href="#">我要评论<em>( 20 )</em></a></span>
+        <div class="fontSize">字号：<b title="切换到小字体" class="small" id="fontSmall">T</b>|<b title="切换到大字体" class="big" id="fontbig">T</b></div>
+      </div>
+      <div class="content cl">
+        <p>新闻内容。<a href="#" target="_blank" title="点击进入网站名称首页" id="backqqcom" style="white-space: nowrap;"><img width="16" height="16" src="http://www.qq.com/favicon.ico"><span style="padding-left: 5px; font-size: 14px;">返回网站名称首页&gt;&gt;</span></a></p>
+      </div>
+    </section>
+	Explain:		资讯列表
+	Last Modify:	jackying
+*/
+.article_show.cl{}
+.titlebar{ text-align:center}
+.article_show h1{color: #000;font-size: 24px;font-weight:400;margin-bottom: 8px}
+
+.article_show .article-subtitle {color:#666;font-size:16px;margin:10px 0 0;}
+/*附属信息*/
+.article_show .titbar{position:relative;height:16px;font-size:12px; color:#7e7e7e;padding-bottom:10px; border-bottom:1px solid #ddd;}
+.article_show .titbar span{ padding-right:10px;}
+.article_show .titbar span a{color:#7e7e7e;}
+.article_show .titbar span a:hover{ text-decoration:underline;}
+.article_show .titbar span.wypl a em{ font-style:normal; color:#c00;}
+/*字号调整*/
+.article_show .fontSize{ position:absolute;right:0; top:-1px;}
+.article_show .fontSize b{ cursor:pointer; font-family:"Times New Roman", Times, serif;}
+.article_show .fontSize .small{ color:#666; font-size:10px; padding-right:3px;}
+.article_show .fontSize .big{ color:#0B3B8C; font-size:13px;padding-left:3px;}
+/*上一篇，下一篇*/
+title_1{clear:both;background-color:#fafafa; padding:5px 8px}
+title_1 span{ display:inline-block; width:49%; color:#666}
+/*相关阅读*/
+.otherNews{text-align:left;}
+
+/*4 评论
+	Name:			page_comment_form
+	Sample:			
+	<section class="comment_form cl">
+      ……
+    </section>
+	Explain:		评论表单
+	Last Modify:	jackying
+*/
+.comment_form .face span{ display:block; float:left; width:24px; height:24px; margin-right:10px; cursor:pointer;}
+	.face201{ background:url(../images/face/201.gif) no-repeat;}
+	.face202{ background:url(../images/face/202.gif) no-repeat;}
+	.face203{ background:url(../images/face/203.gif) no-repeat;}
+	.face204{ background:url(../images/face/204.gif) no-repeat;}
+	.face205{ background:url(../images/face/205.gif) no-repeat;}
+	.face206{ background:url(../images/face/206.gif) no-repeat;}
+	.face207{ background:url(../images/face/207.gif) no-repeat;}
+	.face208{ background:url(../images/face/208.gif) no-repeat;}
+	.face209{ background:url(../images/face/209.gif) no-repeat;}
+	.face210{ background:url(../images/face/210.gif) no-repeat;}
+.comment_form textarea {font-size:14px;height:90px;padding:6px;text-align:left;color:#d1d1d1; background:#fff url(../images/post_body_bg.gif) no-repeat center}
+.comment_form .loginbar{line-height:22px;}
+
+
+footer{border-top:1px solid #E8E8E8;font-family:tahoma,Arial;color:#999; font-size:12px;line-height:22px;text-align:center; padding:10px 0; margin-top:20px}
+footer p{margin-bottom:0}
+footer a,footer a:hover{color:#999}
+
+@media (min-width: 768px) and (max-width: 979px){
+	.Hui-wraper{ width:auto; margin:0 10px}
+	.ct2 .mn{ float:left;}	
+	.mainnav{ padding:0}
+}
+@media (max-width: 767px) {
+	body{background-color:#FAFAFA;}
+	body,.content{ font-size:16px; line-height:1.6}
+	.Hui-wraper{ width:auto; padding:0 10px}
+	.containBox{background-color:#FAFAFA;}
+	a:hover,a:focus,.maincolor,.maincolor a{color:#6590BD}
+	.headline{ font-size:24px; text-align:center; margin:0}
+	.headline a{ display:block;padding:12px;}
+	.content{ line-height:1.8}	
+	.title_1{ padding:6px 12px; font-size:18px;border-top:solid 1px #ddd; border-bottom:solid 1px #ddd; background-color:#e6e6e6;}
+	.header_top{ display:block;font-size:16px; background-color:#6590BD;border-bottom:1px solid #6189B5;height:41px; line-height:41px;}
+	.header_top .Hui-wraper{padding:0px 15px;}	
+	.header-nav .home{ position:relative; padding-left:17px;}
+	.header-nav i,.h-download i,.tmBtn,.iReadMode span i{ background:url(../images/icon.png) no-repeat 9999px 9999px; background-size:175px}
+	.header-nav .home i {position: absolute;background-position:-100px -225px;height: 17px;left:-3px;top: 13px;width: 17px;}
+	.header-nav a{float:left; padding:0 18px 0 12px; background:url(../images/index.png) no-repeat 100% 0;background-size:15px auto;}
+	.h-download{position:absolute;top:0;right:50px;width:60px;height:41px;color:#e2eaf3!important;text-align:center;text-indent:-9999px;overflow:hidden}
+	.h-download i{position:absolute;top:11px;right:9px;width:40px;height:22px;background-position:-50px 0}
+	.h-download, .tmBtn{ display:block}
+	.tmBtn { cursor:pointer; background-position: 14px 12px;height: 41px;position: absolute;right: 0;top: 0;width: 48px;}
+	.mainnav{ background-color:#6590BD; padding:0}
+	.mainnav li a{ padding:0px}
+	.h_topbar{height:42px; display:block}	
+	.AD_1000{ display:none}
+	.crumb_search,#sharebar,.nextpage,.comment_form,.ct2 .sd,.cishu,.wypl,.fontSize,#backqqcom{display:none}	
+	.ct2 .mn{ width:auto; float:none;border-top:none; padding-top:0}
+	.titlebar{text-align:left; border-left: solid 4px #6590BD; padding:0px 0 0px 15px;}
+	.night .titlebar{ border-left-color:#C8C8C8}
+	.article_show .titbar{ border-bottom:none; padding-bottom:0}
+	.comment_form textarea{ width:100%}
+	footer{ font-size:14px; margin-top:10px}	
+	
+	/*隐藏的菜单*/
+	.sideBox{position:absolute; display:block;z-index:99;right:0;top:0;bottom:0;width:270px;background-color:#303135}
+	.sideTool{ padding-left:14px;}
+	.iReadMode{ display:block; width:120px;margin-top:20px; cursor:pointer;}
+	.iReadMode span{display:block;width: 57px;height:36px;float: left;border-radius: 3px;position:relative}
+	.iReadMode.selected .inight,.iReadMode .iday{background-image:-ms-linear-gradient(top,#37383d,#303135);background-image:-moz-linear-gradient(top,#37383d,#303135);background-image:-webkit-gradient(linear,0 0,0 100%,from(#37383d),to(#303135));background-image:-webkit-linear-gradient(top,#37383d,#303135);background-image:-o-linear-gradient(top,#37383d,#303135);background-image:linear-gradient(top,#37383d,#303135);border:1px solid #212124;}
+	.iReadMode .inight,.iReadMode.selected .iday{background: none repeat scroll 0 0 rgba(0, 0, 0, 0);background-color:#232426;border: 1px solid rgba(0, 0, 0, 0);}
+	.iReadMode span.inight{border-top-right-radius:0px;border-bottom-right-radius:0px;}
+	.iReadMode.selected span.iday{border-top-left-radius:0px;border-bottom-left-radius:0px;}
+	.iReadMode span i{height: 18px;left: 50%;position: absolute;top: 10px;width: 20px;margin-left: -10px;}
+	.iReadMode span.inight i{ background-position: 0 -75px;margin-left: -7px;}
+	.iReadMode span.iday i{ background-position: -50px -50px}
+	.iReadMode.selected span.inight i{background-position:0 -50px;}
+	.iReadMode.selected span.iday i{background-position:-50px -75px;}
+}
+
+/*夜间模式*/
+body.night{ background-color:#2A2A2A; color:#C8C8C8}
+.night a{ color:#C8C8C8;}
+.night a:hover,.night a:focus,.night .maincolor,.night .maincolor a{color:#C8C8C8}
+.night .title_1{ background-color:inherit;border-top:solid 1px #2a2a2a;border-bottom: 1px solid #1F1F1F;box-shadow: 0 1px 1px #333;}
+.night .containBox{background-color:#2A2A2A;}
+.night .article_show h1{color: #fff;}
+.night footer{border-top:1px solid #333;}
+.night footer,.night footer a{color:#686868}

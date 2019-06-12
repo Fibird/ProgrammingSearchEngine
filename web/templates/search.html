@@ -145,6 +145,15 @@
         position: relative;
 
     }
+    .page a, .page span{
+        text-decoration: none;
+        border: 1px solid blue;
+        padding: 5px 7px;
+        color: #767675;
+    }
+    .page a:hover, .page span:hover{
+        color: red;
+    }
     </style>
     
 </head>
@@ -179,7 +188,7 @@
             </form>
         </div>
         <br/> 
-        <div id=container>
+        <div id="container">
         {% block high_search%}
         {% endblock %}
         </div>
@@ -199,16 +208,23 @@
         {% block next %}
 
         <hr/>
-        <ul>
-            {% for i in page %}
-                <a href="/search/page/{{i}}/">{{i}}</a>&nbsp;
-            {% endfor %}
-        </ul>
+        <div class="page">
+    
+                <a>上一页</a>
+                
+                    {% for i in page %}
+                        {% if loop.index0 < 10 %}
+                        <a href="/search/page/{{i}}/">{{i}}</a>&nbsp;
+                        {% endif %}
+                    {% endfor %}
+                {% if page|length > 10 %}
+                <a href="/search/page/{{11}}/">下一页</a>
+                {% endif %}
+        </div>
         {% endblock %}
         {% else %}
             <p>对不起，没有您搜索的网页！</p>
         {% endif %}
-
     </div>
 </body>
 <script type="text/javascript">

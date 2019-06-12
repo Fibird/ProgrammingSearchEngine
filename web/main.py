@@ -12,11 +12,13 @@ import time
 
 import jieba
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", template_folder="templates")
 
 doc_dir_path = ''
 db_path = ''
 global page
+global page_num
+global page_page_num
 global keys
 
 
@@ -40,7 +42,7 @@ def search():
     try:
         global keys
         global checked
-        global dir_path
+        #global dir_path
         checked = ['checked="true"', '', '']
         input_keys = request.form['key_word']
         select_keys1 = request.form['select_key1']
@@ -87,8 +89,9 @@ def cut_page(page, no):
 def find(docid, extra=False):
     docs = []
     global dir_path, db_path
+    tmp_path="../data/news/"
     for id in docid:
-        root = ET.parse(dir_path + '%s.xml' % id).getroot()
+        root = ET.parse(tmp_path + '%s.xml' % id).getroot()
         url = root.find('url').text
         title = root.find('title').text
         body = root.find('body').text
@@ -100,9 +103,10 @@ def find(docid, extra=False):
         if extra:
             temp_doc = get_k_nearest(db_path, id)
             for i in temp_doc:
-                root = ET.parse(dir_path + '%s.xml' % i).getroot()
+                root = ET.parse(tmp_path + '%s.xml' % i).getroot()
                 title = root.find('title').text
-                doc['extra'].append({'id': i, 'title': title})
+                datetime = root.find('datetime').text
+                doc['extra'].append({'id': i, 'title': title, 'datetime': datetime})
         docs.append(doc)
     return docs
 
@@ -110,13 +114,24 @@ def find(docid, extra=False):
 @app.route('/search/page/<page_no>/', methods=['GET'])
 def next_page(page_no):
     try:
+        ks = keys.split('|')[0]
         page_no = int(page_no)
         docs = cut_page(page, (page_no-1))
-        return render_template('high_search.html', checked=checked, key=keys, docs=docs, page=page,
+        return render_template('high_search.html', checked=checked, key=keys, input_key=ks, docs=docs, page=page,
                                error=True)
     except:
         print('next error')
 
+# @app.route('/search/page/next/', methods=['GET'])
+# def next_page_page(page_no):
+#     try:
+#         ks = keys.split('|')[0]
+#         page_no = int(page_no)
+#         docs = cut_page(page, (page_no-1))
+#         return render_template('high_search.html', checked=checked, key=keys, input_key=ks, docs=docs, page=page,
+#                                error=True)
+#     except:
+#         print('next error')
 
 @app.route('/search/<key>/', methods=['POST'])
 def high_search(key):
@@ -127,7 +142,6 @@ def high_search(key):
                 checked[i] = 'checked="true"'
             else:
                 checked[i] = ''
-        
         
         ks = key.split('|')
         key1 = ks[0]
