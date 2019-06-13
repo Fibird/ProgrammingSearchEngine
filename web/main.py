@@ -91,6 +91,8 @@ def find(docid, extra=False):
     global dir_path, db_path
     tmp_path="../data/news/"
     for id in docid:
+        if id == 617:
+            continue
         root = ET.parse(tmp_path + '%s.xml' % id).getroot()
         url = root.find('url').text
         title = root.find('title').text

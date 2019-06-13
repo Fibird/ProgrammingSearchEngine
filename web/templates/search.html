@@ -173,7 +173,7 @@
                     范围：
                         <select name="select_key2" id="se2">
                             <option value="" selected>请选择</option>
-                            <option value="国内">国内</option>
+                            <option value="中国">国内</option>
                             <option value="国际">国际</option> 
                         </select>
                     <br/> 
@@ -195,7 +195,7 @@
         <hr/>
         {% if error%}
             {% for doc in docs%}
-            <div id="doc">
+            <div id="doc" style="margin: 0 auto;">
                 <ul id="navigation">
                     <p><big><a href="/search/{{doc.id}}/" target="_blank">{{doc.title}}</a></big></p>
                     <p>{{doc.time}}<br/>{{doc.snippet}}<br/>
@@ -208,19 +208,23 @@
         {% block next %}
 
         <hr/>
-        <div class="page">
-    
+        <div id="container" style="margin: 0 auto;">
+            <div class="page">
+        
                 <a>上一页</a>
-                
-                    {% for i in page %}
-                        {% if loop.index0 < 10 %}
-                        <a href="/search/page/{{i}}/">{{i}}</a>&nbsp;
-                        {% endif %}
-                    {% endfor %}
+        
+                {% for i in page %}
+                {% if loop.index0 < 10 %}
+                <a href="/search/page/{{i}}/">{{i}}</a>&nbsp;
+                {% endif %}
+                {% endfor %}
                 {% if page|length > 10 %}
                 <a href="/search/page/{{11}}/">下一页</a>
                 {% endif %}
+                <span>共 {{ page|length }} 页</span>
+            </div>
         </div>
+    </div>
         {% endblock %}
         {% else %}
             <p>对不起，没有您搜索的网页！</p>
